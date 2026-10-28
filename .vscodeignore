@@ -1,0 +1,10 @@
+**
+!out/extension.js
+!out/names.js
+!out/serializer.js
+!python_debug_copy/*.py
+!images/icon.png
+!package.json
+!README.md
+!CHANGELOG.md
+!LICENSE.txt

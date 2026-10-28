@@ -1,0 +1,241 @@
+{
+  "name": "python-debug-copy",
+  "displayName": "Python Debug Copy",
+  "description": "Copy Python debug variables as JSON or as a Python dict, with all nested values. Plus Copy Name and Copy Path.",
+  "icon": "images/icon.png",
+  "version": "1.0.0",
+  "publisher": "dark-dmake",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "bugs": {
+    "url": "https://github.com/darkdkl/vscode-python-debug-copy/issues"
+  },
+  "homepage": "https://github.com/darkdkl/vscode-python-debug-copy#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darkdkl/vscode-python-debug-copy.git"
+  },
+  "qna": "https://github.com/darkdkl/vscode-python-debug-copy/issues",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Debuggers",
+    "Other"
+  ],
+  "keywords": [
+    "python",
+    "debug",
+    "debugger",
+    "debugpy",
+    "variables",
+    "json",
+    "dict",
+    "copy",
+    "clipboard",
+    "copy path"
+  ],
+  "galleryBanner": {
+    "color": "#1d2633",
+    "theme": "dark"
+  },
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "pythonDebugCopy.copyName",
+        "title": "Copy Name",
+        "category": "Python Debug Copy"
+      },
+      {
+        "command": "pythonDebugCopy.copyPath",
+        "title": "Copy Path",
+        "category": "Python Debug Copy"
+      },
+      {
+        "command": "pythonDebugCopy.copyAsJson",
+        "title": "Copy as JSON",
+        "category": "Python Debug Copy"
+      },
+      {
+        "command": "pythonDebugCopy.copyAsPython",
+        "title": "Copy as Python dict",
+        "category": "Python Debug Copy"
+      },
+      {
+        "command": "pythonDebugCopy.openAsJson",
+        "title": "Open as JSON",
+        "category": "Python Debug Copy"
+      },
+      {
+        "command": "pythonDebugCopy.openAsPython",
+        "title": "Open as Python dict",
+        "category": "Python Debug Copy"
+      }
+    ],
+    "menus": {
+      "debug/variables/context": [
+        {
+          "command": "pythonDebugCopy.copyName",
+          "when": "debugType == 'debugpy' || debugType == 'python'",
+          "group": "5_cutcopypaste@15"
+        },
+        {
+          "command": "pythonDebugCopy.copyPath",
+          "when": "debugType == 'debugpy' || debugType == 'python'",
+          "group": "5_cutcopypaste@16"
+        },
+        {
+          "command": "pythonDebugCopy.copyAsJson",
+          "when": "debugType == 'debugpy' || debugType == 'python'",
+          "group": "5_pythonDebugCopy@1"
+        },
+        {
+          "command": "pythonDebugCopy.copyAsPython",
+          "when": "debugType == 'debugpy' || debugType == 'python'",
+          "group": "5_pythonDebugCopy@2"
+        },
+        {
+          "command": "pythonDebugCopy.openAsJson",
+          "when": "debugType == 'debugpy' || debugType == 'python'",
+          "group": "5_pythonDebugCopy@3"
+        }
+      ],
+      "debug/watch/context": [
+        {
+          "command": "pythonDebugCopy.copyName",
+          "when": "debugType == 'debugpy' || debugType == 'python'",
+          "group": "3_modification@45"
+        },
+        {
+          "command": "pythonDebugCopy.copyPath",
+          "when": "debugType == 'debugpy' || debugType == 'python'",
+          "group": "3_modification@46"
+        },
+        {
+          "command": "pythonDebugCopy.copyAsJson",
+          "when": "debugType == 'debugpy' || debugType == 'python'",
+          "group": "5_pythonDebugCopy@1"
+        },
+        {
+          "command": "pythonDebugCopy.copyAsPython",
+          "when": "debugType == 'debugpy' || debugType == 'python'",
+          "group": "5_pythonDebugCopy@2"
+        },
+        {
+          "command": "pythonDebugCopy.openAsJson",
+          "when": "debugType == 'debugpy' || debugType == 'python'",
+          "group": "5_pythonDebugCopy@3"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "pythonDebugCopy.copyAsJson",
+          "when": "inDebugMode && (debugType == 'debugpy' || debugType == 'python') && editorHasSelection && editorLangId == python",
+          "group": "9_cutcopypaste@50"
+        },
+        {
+          "command": "pythonDebugCopy.copyAsPython",
+          "when": "inDebugMode && (debugType == 'debugpy' || debugType == 'python') && editorHasSelection && editorLangId == python",
+          "group": "9_cutcopypaste@51"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "pythonDebugCopy.copyName",
+          "when": "false"
+        },
+        {
+          "command": "pythonDebugCopy.copyPath",
+          "when": "false"
+        },
+        {
+          "command": "pythonDebugCopy.copyAsJson",
+          "when": "inDebugMode && (debugType == 'debugpy' || debugType == 'python')"
+        },
+        {
+          "command": "pythonDebugCopy.copyAsPython",
+          "when": "inDebugMode && (debugType == 'debugpy' || debugType == 'python')"
+        },
+        {
+          "command": "pythonDebugCopy.openAsJson",
+          "when": "inDebugMode && (debugType == 'debugpy' || debugType == 'python')"
+        },
+        {
+          "command": "pythonDebugCopy.openAsPython",
+          "when": "inDebugMode && (debugType == 'debugpy' || debugType == 'python')"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Python Debug Copy",
+      "properties": {
+        "pythonDebugCopy.json.indent": {
+          "type": "number",
+          "default": 2,
+          "minimum": 0,
+          "description": "JSON indentation. 0 = compact single line."
+        },
+        "pythonDebugCopy.json.ensureAscii": {
+          "type": "boolean",
+          "default": false,
+          "description": "Escape non-ASCII characters (\\uXXXX) in JSON output."
+        },
+        "pythonDebugCopy.python.width": {
+          "type": "number",
+          "default": 100,
+          "minimum": 0,
+          "description": "Line width for pprint in 'Python dict' mode. 0 = single line repr()."
+        },
+        "pythonDebugCopy.sortKeys": {
+          "type": "boolean",
+          "default": false,
+          "description": "Sort dictionary keys."
+        },
+        "pythonDebugCopy.maxDepth": {
+          "type": "number",
+          "default": 100,
+          "minimum": 1,
+          "description": "Maximum nesting depth; deeper values are replaced with a placeholder."
+        },
+        "pythonDebugCopy.skipPrivateAttributes": {
+          "type": "boolean",
+          "default": false,
+          "description": "Skip object attributes starting with '_' (dict keys are never skipped)."
+        },
+        "pythonDebugCopy.includeTypeName": {
+          "type": "boolean",
+          "default": false,
+          "description": "Add a \"__type__\" key with the class name when converting objects (dataclasses, pydantic, plain objects)."
+        },
+        "pythonDebugCopy.dataFrameOrient": {
+          "type": "string",
+          "enum": [
+            "records",
+            "list",
+            "dict",
+            "split",
+            "index",
+            "tight"
+          ],
+          "default": "records",
+          "description": "pandas DataFrame.to_dict(orient=...) used for DataFrames."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "watch": "tsc -watch -p .",
+    "typecheck": "tsc -p . --noEmit",
+    "test": "python3 -m unittest discover -s tests -v",
+    "test:dap": "npm run compile && node tests/dap_integration.js",
+    "vscode:prepublish": "npm run compile",
+    "package": "vsce package --no-dependencies --out python-debug-copy-$npm_package_version.vsix"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "~1.90.0",
+    "@vscode/vsce": "^3.0.0",
+    "typescript": "^5.4.0"
+  }
+}

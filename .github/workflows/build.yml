@@ -1,0 +1,84 @@
+name: Build
+
+on:
+  push:
+    branches-ignore: [test]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.8", "3.10", "3.12", "3.13"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          python -m pip install --upgrade debugpy
+
+      - name: Check types
+        run: npm run typecheck
+
+      - name: Run helper unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Run debugpy integration test
+        run: npm run test:dap
+        env:
+          PYTHON: python
+          PYDEVD_DISABLE_FILE_VALIDATION: 1
+
+  package:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Package the extension
+        run: npm run package
+
+      - name: Publish the release
+        if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch
+        run: |
+          version=$(node -p "require('./package.json').version")
+          file="python-debug-copy-$version.vsix"
+          if gh release view "v$version" > /dev/null 2>&1; then
+            echo "v$version is already released, nothing to publish"
+          else
+            awk -v v="## $version" '$0 == v { found = 1; next } found && /^#/ { exit } found' CHANGELOG.md > notes.md
+            gh release create "v$version" "$file" --title "$version" --notes-file notes.md --target "$GITHUB_SHA"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
